@@ -1,4 +1,4 @@
-1  Listar os empregados (nomes) que tem salário maior que seu chefe (usar o join)
+1  Listar os empregados (nomes) que tem salário maior que seu chefe (usar o join) 
 --  empregado | 
 -- -----------+
 --  Maria     |
