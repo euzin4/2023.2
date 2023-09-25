@@ -42,7 +42,24 @@ $$ language plpgsql;
 
 CREATE TRIGGER tg_alt_dep AFTER INSERT OR UPDATE OR DELETE ON departamentos FOR EACH ROW EXECUTE PROCEDURE fnc_alt_dep();
 
-3- Evite a inserção ou atualização de um salário do  empregado que seja maior do que seu chefe. 
+3-(terminar) Evite a inserção ou atualização de um salário do  empregado que seja maior do que seu chefe. 
+
+DROP TRIGGER tg_blk_aum ON empregados;
+drop FUNCTION fn_blk_aum();
+
+create function fn_blk_aum() returns TRIGGER as $$
+declare
+	ss int;
+begin
+	select salario into ss from empregados where emp_id = NEW.supervisor_id;
+	if (NEW.salario > ss and NEW.emp_id != NEW.supervisor_id) then
+		raise notice 'ERRO: salario maior que do supervisor';
+	end if;
+	return NEW;
+end;
+$$ language plpgsql;
+
+CREATE TRIGGER tg_blk_aum BEFORE UPDATE OR INSERT ON empregados FOR EACH ROW EXECUTE PROCEDURE fn_blk_aum();
 
 4- Faça um trigger para armazenar o total de salário pagos em cada departamento. Caso um novo empregado 
 seja adicionado (ou atualizado), o total gasto no departamento deve ser atualizado.
